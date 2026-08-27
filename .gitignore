@@ -1,0 +1,23 @@
+# ===== 密钥（严禁提交，泄露即被盗刷）=====
+.env
+
+# ===== 运行时数据（clone 后重建）=====
+chroma_db/
+chat_history/
+md5.text
+
+# ===== Python 缓存 =====
+__pycache__/
+*.pyc
+
+# ===== 开发过程备份 =====
+backup_*/
+测试备份_*/
+
+# ===== 测试残留（test_bugs 已被 test_suite 取代，不入库）=====
+测试脚本/chroma_db/
+测试脚本/test_bugs.py
+
+# ===== IDE 配置 =====
+.idea/
+.vscode/
