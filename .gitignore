@@ -14,7 +14,7 @@ __pycache__/
 backup_*/
 测试备份_*/
 
-# ===== 测试残留（test_bugs 已被 test_suite 取代，不入库）=====
+# ===== 测试残留 =====
 测试脚本/chroma_db/
 测试脚本/test_bugs.py
 

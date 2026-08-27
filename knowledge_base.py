@@ -4,7 +4,7 @@ os.environ["TRANSFORMERS_OFFLINE"] = "1"
 
 from pathlib import Path
 from dotenv import load_dotenv
-# .env 位于项目根目录（RAG项目 的上一级），用绝对路径加载，不受启动目录影响
+# .env 位于项目根目录，用绝对路径加载，不受启动目录影响
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
 import hashlib
@@ -78,7 +78,7 @@ class KnowledgeBaseService(object):
       if file_type not in config.support_file_types:
           return f"[失败]不支持的格式 .{file_type}，仅支持：{config.support_file_types}"
 
-      # ---- 文件级去重判定（整个文件的指纹）----
+      # ---- 文件级去重判定 ----
       file_md5 = hashlib.md5(data).hexdigest()
       records = read_md5_records()
 
@@ -163,7 +163,7 @@ class KnowledgeBaseService(object):
                 "file_size": m.get("file_size", 0),
             })
             info["chunk_count"] += 1
-            # 取最早的 create_time作该文件的上传时间（旧数据可能缺该字段，用空串保护）
+            # 取最早的 create_time作该文件的上传时间
             if m.get("create_time", "") and m["create_time"] < info["create_time"]:
                 info["create_time"] = m["create_time"]
 

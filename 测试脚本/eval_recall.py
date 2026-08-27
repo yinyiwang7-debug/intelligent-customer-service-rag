@@ -20,10 +20,6 @@ import os
 import sys
 from pathlib import Path
 
-# 项目根统一处理（两件事是两个机制，缺一不可）：
-# 1) sys.path 管"import 找模块"：根目录加入后，子目录脚本才能 import 上级的 rag 等模块
-# 2) cwd 管"相对路径数据文件"：config_data.py 里 ./chroma_db、./md5.text 是相对路径，
-#    必须把工作目录切到项目根，否则从别的目录运行会指向错误位置（空库、全 FAIL）
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 os.chdir(ROOT)
@@ -49,7 +45,7 @@ def main():
           f"k={config.retrieve_k}）=====\n")
 
     for i, (question, target) in enumerate(QA_PAIRS, 1):
-        # 1. 查询改写：与线上一致（LLM 调用失败则降级用原问题检索，并标记）
+        # 1. 查询改写：与线上一致
         rewritten = None
         if config.query_rewrite_on:
             try:
@@ -63,7 +59,7 @@ def main():
         docs = rag.retriever.invoke(rewritten)
         sources = [d.metadata.get("source", "") for d in docs]
 
-        # 3. 判定：标准文档是否出现在前 k 个里（recall@1/@2/@4 共用一次检索结果）
+        # 3. 判定：标准文档是否出现在前 k 个里
         row_hits = {k: target in sources[:k] for k in (1, 2, 4)}
         for k, ok in row_hits.items():
             hits[k] += 1 if ok else 0
@@ -80,8 +76,7 @@ def main():
         print(f"top{config.retrieve_k}: {detail or '（阈值过滤后为空）'}")
 
         if not row_hits[4]:
-            # 失败题分析：不带阈值取全量排序（k=20 覆盖全部 chunk），
-            # 拿到目标文档的真实排位与分数，供根因判断使用
+            # 失败题分析：不带阈值取全量排序
             all_docs = vs.vector_store.similarity_search_with_relevance_scores(
                 rewritten, k=20)
             pos = next((idx + 1 for idx, (d, sc) in enumerate(all_docs)

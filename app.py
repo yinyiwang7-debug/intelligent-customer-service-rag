@@ -13,7 +13,6 @@ from kb_page import render_kb_page
 st.set_page_config(page_title="RAG 学习项目")
 
 # ---- 侧边栏导航：选中页挂 URL 参数，刷新后停在当前页 ----
-# （与 chat_page 的 session_id 同一思路：URL 即状态，刷新不丢）
 params = st.query_params
 page = params.get("page")
 if page not in ("智能客服", "知识库管理"):
@@ -29,7 +28,7 @@ with st.sidebar:
         params["page"] = selected   # 用户切换页面 -> 同步写回 URL
         st.rerun()
 
-# ---- 按选中页面分发（未选中页面的代码不会执行）----
+# ---- 按选中页面分发 ----
 if page == "智能客服":
     render_chat_page()
 else:

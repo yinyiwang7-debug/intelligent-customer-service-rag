@@ -83,7 +83,7 @@ def clean_text(text: str) -> str:
 
     if config.clean_header_footer:
         # 启发式：全文中重复出现 >=3 次且长度 <=30 的行，视为页眉/页脚特征行删除
-        # 代价：正常文档里高频短行（如反复出现的小标题）也会被删，已按"尽力而为"接受
+        # 代价：正常文档里高频短行也会被删
         counter = {}
         for ln in lines:
             key = ln.strip()

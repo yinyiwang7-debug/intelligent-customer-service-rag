@@ -34,7 +34,7 @@ session_config = {
 support_file_types = ["txt", "pdf", "docx", "md"]
 
 # 文本清洗开关
-clean_header_footer = True  # 删除跨页重复出现的短行（页眉/页脚特征）
+clean_header_footer = True  # 删除跨页重复出现的短行（页眉/页脚）
 clean_page_number = True  # 删除整行为纯数字的行（页码）
 compress_blank = True  # 连续空行压缩
 
@@ -73,7 +73,7 @@ query_rewrite_on = True
 # 检索不到相关内容时的兜底回复
 fallback_answer = "抱歉，知识库中暂时没有与您问题相关的信息，建议转接人工客服咨询。"
 
-# 意图模糊主动追问开关：True = 用户需求不明确时先反问收集信息（性别/身高体重/场合等），False = 跳过追问
+# 意图模糊主动追问开关：True = 用户需求不明确时先反问收集信息，False = 跳过追问
 clarify_on = True
 # 连续追问最多轮数：防止无限追问死循环
 clarify_max_rounds = 1

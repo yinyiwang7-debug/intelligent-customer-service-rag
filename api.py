@@ -18,7 +18,7 @@ os.environ["TRANSFORMERS_OFFLINE"] = "1"
 
 from pathlib import Path
 from dotenv import load_dotenv
-# .env 在项目根目录（RAG项目 的上一级），绝对路径加载，不受启动目录影响
+# .env 在项目根目录，绝对路径加载，不受启动目录影响
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
 from contextlib import asynccontextmanager
@@ -33,8 +33,7 @@ from rag import RagService
 from file_history_store import get_history
 
 
-# ---- 服务单例：启动时加载一次（bge-m3 约 3-5 秒），之后所有请求共享 ----
-# 与 Streamlit 的 session_state 缓存同一思想，只是生命周期换成"服务进程"
+# ---- 服务单例：启动时加载一次，之后所有请求共享 ----
 _kb_service = None
 _rag_service = None
 
@@ -54,7 +53,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="RAG 智能客服 API", lifespan=lifespan)
 
-# 预留：以后浏览器前端跨域调用时放行（本地开发全开）
+# 预留：以后浏览器前端跨域调用时放行
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -63,7 +62,7 @@ app.add_middleware(
 )
 
 
-# ---- 请求/响应模型（pydantic：自动校验参数 + 自动生成接口文档）----
+# ---- 请求/响应模型 ----
 class ChatRequest(BaseModel):
     question: str                          # 必填：用户问题
     session_id: Optional[str] = "default"  # 选填：会话 ID，决定读写哪个历史文件

@@ -4,7 +4,6 @@
 由 app.py 统一入口调用 render_chat_page()，不要单独 streamlit run 本文件。
 
 1. 浏览器会话隔离：session_id 用 uuid 随机生成，存 st.session_state
-   （Streamlit 的 session_state 天然按浏览器会话隔离，每个标签页独立）
 2. 侧边栏"清空历史记录"按钮
 3. 回答溯源展示：答案下方展示参考来源文件
 4. 异常友好提示：LLM 调用失败显示提示语，不再崩页面
@@ -24,7 +23,6 @@ def render_chat_page():
 
     # ---- 会话管理：session_id 挂在 URL 查询参数上 ----
     # 刷新/复制链接都不丢 id；多用户各用各的 URL 天然隔离
-    # （生产等价的简化版：客户端携带标识，服务端按标识存取，无状态）
     params = st.query_params
     session_id = params.get("session_id")
     if not session_id:
@@ -32,7 +30,7 @@ def render_chat_page():
         st.rerun()                                        # 立即重跑，本次会话拿到新 id
     session_id = params["session_id"]
 
-    # ---- 页面消息与服务初始化：刷新后从文件历史还原（欢迎语仅首次访问显示） ----
+    # ---- 页面消息与服务初始化：刷新后从文件历史还原 ----
     if "message" not in st.session_state:
         history = get_history(session_id)
         if history.messages:

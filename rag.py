@@ -57,10 +57,10 @@ class RagService(object):
         )
         self.rewrite_chain = self.rewrite_prompt | self.chat_model | StrOutputParser()
 
-        # ---- 环节二：意图追问链 ）----
+        # ---- 环节二：意图追问链 ----
         # 独立成链的原因：一条链一个职责；代码能读 CLARIFY: 前缀做轮数判环；
         # 追问轮直接 return，不发起检索。判断依据用"原始问题"而非改写结果
-        # （改写是检索用的关键词压缩，会把模糊问题压成看似信息齐全的短语）。
+        # 改写是检索用的关键词压缩，会把模糊问题压成看似信息齐全的短语。
         self.clarify_prompt = ChatPromptTemplate.from_messages(
             [
                 ("system", "你是服装电商智能客服的\"意图判断\"助手。你的唯一任务：判断用户问题是否需要追问，"
@@ -118,8 +118,7 @@ class RagService(object):
             rewritten = question
 
         # 2. 意图闸门：改写后、检索前，意图模糊则主动追问
-        # 追问与否只由"意图"决定，不由"检索运气"决定——模糊问题即使侥幸
-        # 命中低相关内容也不硬答，先问清需求
+        # 追问与否只由"意图"决定，不由"检索运气"决定
         if config.clarify_on and not self._clarify_reached(session_id, config.clarify_max_rounds):
             result = self.clarify_chain.invoke({
                 "input": question,

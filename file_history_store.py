@@ -29,10 +29,6 @@ class FileChatMessageHistory(BaseChatMessageHistory):
         # 类对象写入文件 —> 一堆二进制
         # 为了方便，可以将BaseMessage消息转为字典（借助json模块以json字符串写入文件）
         # 官方message_to_dict:单个消息对象（BaseMessage类示例） -> 字典
-        # new_messages = []
-        # for message in all_messages:
-        #     d = message_to_dict(message)
-        #     new_messages.append(d)
         if len(all_messages) > config.max_history_messages:
             all_messages = all_messages[-config.max_history_messages:]
 

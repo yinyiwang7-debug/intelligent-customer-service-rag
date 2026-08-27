@@ -32,17 +32,12 @@ def render_kb_page():
     )
 
     if uploader_file is not None:
-        # 幂等处理：以控件自带的 file_id 作指纹。
-        # file_id 在 rerun 时不变（拦住"删除其他文件时把滞留文件又传一遍"），
-        # 但用户每次重新选择文件都会生成新 file_id（即使同名同内容），
-        # 所以删除后重新上传同一文件会正常处理——内容指纹做不到这一点。
         data = uploader_file.getvalue()
         fp = uploader_file.file_id
         if fp != st.session_state.get("last_uploaded_fp"):
             with st.spinner("载入知识库中..."):
                 result = st.session_state["kb_service"].uploader_file(data, uploader_file.name)
             # 三色长驻提示：成功绿 / 跳过黄 / 失败红
-            # （幂等方案不再 rerun，页面不会刷新，提示可以稳定展示在上传框下方）
             if result.startswith("[成功]"):
                 st.success(result)
             elif result.startswith("[跳过]"):
