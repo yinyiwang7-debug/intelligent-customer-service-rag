@@ -12,14 +12,11 @@ FastAPI 接口层（与 Streamlit 页面并存，业务逻辑完全复用现有 
   GET    /history/{session_id}   查看会话历史
   DELETE /history/{session_id}   清空会话历史
 """
-import os
-os.environ["HF_HUB_OFFLINE"] = "1"
-os.environ["TRANSFORMERS_OFFLINE"] = "1"
-
 from pathlib import Path
 from dotenv import load_dotenv
 # .env 在项目根目录，绝对路径加载，不受启动目录影响
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+# 注：HF 离线模式由 config_data 在导入时决定，这里通过 knowledge_base 间接最先生效
 
 from contextlib import asynccontextmanager
 from typing import Optional

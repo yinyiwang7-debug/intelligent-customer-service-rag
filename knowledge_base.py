@@ -1,6 +1,4 @@
 import os
-os.environ["HF_HUB_OFFLINE"] = "1"
-os.environ["TRANSFORMERS_OFFLINE"] = "1"
 
 from pathlib import Path
 from dotenv import load_dotenv
@@ -10,10 +8,11 @@ load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 import hashlib
 from datetime import datetime
 
+# 必须先导入 config_data：它在导入时按本地/云端设置 HF_HUB_OFFLINE，
+# 该环境变量必须在 transformers（由 embeddings 引入）导入之前生效
+import config_data as config
 from embeddings import get_embeddings
 from langchain_chroma import Chroma
-
-import config_data as config
 from data_pipeline import process, chunk_md5
 
 

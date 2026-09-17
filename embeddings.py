@@ -5,12 +5,10 @@ RagService 和 KnowledgeBaseService 各自 new 一个 HuggingFaceEmbeddings 的�
 模型会加载两遍、内存翻倍。这里用模块级缓存：谁先用到谁触发加载，
 之后所有人复用同一个实例。原理与 st.session_state 缓存相同：缓存 + 复用。
 """
-import os
-os.environ["HF_HUB_OFFLINE"] = "1"        # 双保险：各文件顶部已设，这里再设保证本模块先被导入也安全
-os.environ["TRANSFORMERS_OFFLINE"] = "1"
-
-from langchain_huggingface import HuggingFaceEmbeddings
+# 必须先导入 config_data：它在导入时按本地/云端设置 HF_HUB_OFFLINE，
+# 该环境变量必须在 transformers（由 langchain_huggingface 引入）导入之前生效
 import config_data as config
+from langchain_huggingface import HuggingFaceEmbeddings
 
 _embeddings = None
 

@@ -1,7 +1,0 @@
-评测基线（2026-08-27 17:12）
-配置: score_threshold=0.3, retrieve_k=4, query_rewrite_on=True
-总题数: 20
-recall@1 = 20/20 = 1.000
-recall@2 = 20/20 = 1.000
-recall@4 = 20/20 = 1.000
-失败题: 无

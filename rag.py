@@ -9,24 +9,21 @@
 
 依赖：vector_stores.py（检索）、file_history_store.py（历史）、config_data.py（参数）、.env（API key）
 """
-import os
-os.environ["HF_HUB_OFFLINE"] = "1"
-os.environ["TRANSFORMERS_OFFLINE"] = "1"
-
 from pathlib import Path
 from dotenv import load_dotenv
 
 # .env 在项目根目录（RAG项目 的上一级），用绝对路径加载，不受启动目录影响
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
+# 必须先导入 config_data：它在导入时按本地/云端设置 HF_HUB_OFFLINE，
+# 该环境变量必须在 transformers（由 embeddings 引入）导入之前生效
+import config_data as config
 from embeddings import get_embeddings
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.messages import HumanMessage, AIMessage
 from langchain_openai import ChatOpenAI
-
-import config_data as config
 from vector_stores import VectorStoreService
 from file_history_store import get_history
 
@@ -39,8 +36,9 @@ class RagService(object):
 
         self.chat_model = ChatOpenAI(
             model="deepseek-v4-flash",
-            api_key=os.getenv("DEEPSEEK_API_KEY"),
-            base_url=os.getenv("OPENAI_API_BASE_URL"),
+            # 本地读 .env，云端读平台 secrets（见 config_data.get_secret）
+            api_key=config.get_secret("DEEPSEEK_API_KEY"),
+            base_url=config.get_secret("OPENAI_API_BASE_URL"),
             temperature=0.7,
             max_tokens=2048,
             timeout=60,

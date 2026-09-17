@@ -1,4 +1,12 @@
 # 安装：pip install -r requirements.txt
+#
+# 注意：PyTorch 官方 CPU 索引。不加这一行的话，Linux 上 pip 会拉取 CUDA 版 torch
+# （约 2-3GB），云端构建极慢且根本用不到 GPU；本地 Windows 装的也是 +cpu 版。
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+# ---- 深度学习底座（必须显式锁定，见上方说明）----
+torch==2.13.0+cpu              # 实际由 sentence-transformers 间接依赖，显式锁定避免拉 CUDA 版
+transformers==5.14.1           # sentence-transformers 底层依赖，锁定以保证与本地行为一致
 
 # ---- LangChain 全家桶 ----
 langchain==1.3.14              # 应用框架（含 core / text-splitters / classic）

@@ -24,19 +24,9 @@ class VectorStoreService(object):
         )
 
 if __name__ == '__main__':
-    import os
-    os.environ["HF_HUB_OFFLINE"] = "1"
-    os.environ["TRANSFORMERS_OFFLINE"] = "1"
-    from langchain_huggingface import HuggingFaceEmbeddings
+    # 自测入口：复用共享单例，离线模式与缓存目录统一由 config_data 决定，避免各处重复硬编码
+    from embeddings import get_embeddings
 
-    retriever = VectorStoreService(
-        HuggingFaceEmbeddings(
-            model_name="BAAI/bge-m3",
-            cache_folder="D:/huggingface_cache",
-            model_kwargs={"device": "cpu"},
-            encode_kwargs={"normalize_embeddings": True},
-        )
-    ).get_retriever()
-
+    retriever = VectorStoreService(get_embeddings()).get_retriever()
     res = retriever.invoke("我的体重181斤，尺码推荐")
     print(res)

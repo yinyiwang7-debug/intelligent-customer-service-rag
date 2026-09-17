@@ -1,5 +1,6 @@
 # ===== 密钥（严禁提交，泄露即被盗刷）=====
 .env
+.streamlit/secrets.toml
 
 # ===== 运行时数据（clone 后重建）=====
 chroma_db/
@@ -17,6 +18,8 @@ backup_*/
 # ===== 测试残留 =====
 测试脚本/chroma_db/
 测试脚本/test_bugs.py
+# 评测脚本每次运行自动覆盖写入的结果文件（本地基线留作调参对比，不入库）
+测试脚本/eval_baseline.txt
 
 # ===== IDE 配置 =====
 .idea/

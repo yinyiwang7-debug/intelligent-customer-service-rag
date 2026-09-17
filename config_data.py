@@ -1,3 +1,21 @@
+import os
+
+def get_secret(name: str, default: str = None) -> str:
+    """读取密钥：优先环境变量，回退 Streamlit secrets
+
+    - 本地：.env 由各模块的 load_dotenv 载入 os.environ
+    - 云端：Streamlit Cloud / HF Spaces 没有 .env 文件，密钥配置在平台 secrets 里
+    """
+    value = os.getenv(name)
+    if value:
+        return value
+    try:
+        import streamlit as st
+        return st.secrets[name]
+    except Exception:
+        # 无 secrets 文件，或非 Streamlit 运行时（如 FastAPI 启动）都会走到这里
+        return default
+
 
 md5_path = "./md5.text"                  # md5存储路径
 
@@ -8,8 +26,20 @@ persist_directory = "./chroma_db"
 
 # Embedding（bge-m3）：构造参数
 embedding_model_name = "BAAI/bge-m3"
-embedding_cache_folder = "D:/huggingface_cache"
 embedding_device = "cpu"
+
+# ---- 运行环境自适应：本地有下载好的缓存就离线加载，云端联网首次下载 ----
+# 关键：HF_HUB_OFFLINE / TRANSFORMERS_OFFLINE 必须在 transformers 被导入之前设置才生效，
+#      因此本模块必须早于 langchain_huggingface 导入（见 embeddings.py 顶部的 import 顺序）
+_local_hf_cache = "D:/huggingface_cache"
+if os.path.isdir(_local_hf_cache):
+    # 本地 Windows：缓存已就绪，强制离线，避免访问 huggingface.co 超时挂起
+    embedding_cache_folder = _local_hf_cache
+    os.environ["HF_HUB_OFFLINE"] = "1"
+    os.environ["TRANSFORMERS_OFFLINE"] = "1"
+else:
+    # 云端 Linux：无 D 盘，None = 用 HF 默认缓存目录（~/.cache/huggingface）并允许联网下载
+    embedding_cache_folder = None
 embedding_normalize = True      # 归一化后检索分数 = 余弦相似度
 
 # spliter
