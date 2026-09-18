@@ -1,6 +1,8 @@
 # 智能客服助手 —— 基于 LangChain 的服装电商 RAG 系统
 
-> **在线体验**：（部署后把 Streamlit Cloud 地址填在这里，例：https://xxx.streamlit.app）
+> **在线体验**：https://yinyiwang-rag.streamlit.app
+>
+> 首次访问需输入访问口令；首次提问要下载嵌入模型（约 2.3GB），请耐心等待 1-2 分钟。
 
 ## 一、项目简介
 
