@@ -9,10 +9,16 @@ torch==2.13.0+cpu              # 实际由 sentence-transformers 间接依赖，
 transformers==5.14.1           # sentence-transformers 底层依赖，锁定以保证与本地行为一致
 
 # ---- LangChain 全家桶 ----
-langchain==1.3.14              # 应用框架（含 core / text-splitters / classic）
-langchain-chroma==1.1.0        # Chroma 向量库集成
-langchain-huggingface==1.2.2   # HuggingFaceEmbeddings（bge-m3 加载）
-langchain-openai==1.4.2        # ChatOpenAI（DeepSeek 走 OpenAI 兼容接口）
+# 注意：langchain 1.x 已拆包，主包不再自带 text-splitters / core，
+#      必须逐个显式声明，否则从零构建时（如云端）报 ModuleNotFoundError。
+#      本地环境因历史安装残留（langchain-community 等）曾掩盖此问题。
+langchain==1.3.14               # 应用框架（1.x 仅强依赖 core / langgraph / pydantic）
+langchain-core==1.5.3           # 底层抽象，锁版本与本地一致
+langchain-text-splitters==1.1.2 # 文本分块：data_pipeline.py 第 6 行直接导入
+langchain-chroma==1.1.0         # Chroma 向量库集成
+langchain-huggingface==1.2.2    # HuggingFaceEmbeddings（bge-m3 加载）
+langchain-openai==1.4.2         # ChatOpenAI（DeepSeek 走 OpenAI 兼容接口）
+pydantic==2.13.4                # 数据校验，langchain 强依赖，锁版本与本地一致
 
 # ---- 嵌入模型底层 ----
 sentence-transformers==5.7.0   # bge-m3 推理所需
